@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-export const CRYPTO_CURRENCY_CODES_AND_NAMES = {
+export const CRYPTO_CURRENCY_CODES_AND_NAMES: { [key: string]: string }  = {
 	BTC: 'Bitcoin',
 	DOGE: 'Dogecoin',
 	ETH: 'Ethereum',
