@@ -25,9 +25,10 @@
 
 <figure class="css-chart" style="--widget-size: 400px">
 	<ul id="line-chart" class="line-chart">
-		<!-- <li *ngFor="let point of chartData" style="--x: 40px; --y: 83.3333px;">
-            <div class="data-point" data-value=`${point.value}`></div>
-            <div class="line-segment" style="--hypotenuse: 123.33333333333333; --angle:-71.07535558394876;"></div>
-        </li> -->
+		<li *ngFor="let point of chartData" [style.--x]="point.left + 'px'" [style.--y]="point.bottom + 'px'">
+			<div class="data-point"></div>
+			<!-- data-value=`${point.value}` -->
+			<div class="line-segment" [style.--hypotenuse]="point.hypotenuse" [style.--angle]="point.angle"></div>
+		</li>
 	</ul>
 </figure>

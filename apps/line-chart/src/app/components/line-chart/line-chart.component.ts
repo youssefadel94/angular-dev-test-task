@@ -11,7 +11,13 @@ export class LineChartComponent implements OnInit {
 	@Input()
 	data!: Observable<any>;
 	subscription!: Subscription;
-	chartData: any;
+	chartData: {
+		left: number;
+		bottom: number;
+		hypotenuse: number;
+		angle: number;
+		value: any;
+	}[]=[];
 	originalData: any;
 
 
@@ -19,22 +25,28 @@ export class LineChartComponent implements OnInit {
 		console.log("");
 		this.subscription = this.data.subscribe(v => {
 			// console.log(23,v);
-			if (v.length > 1) {
+			if (v.length > 2) {
 				this.chartData = v;
-				this.originalData = v;
-				this.render(
-					this.formatLineChartData(this.chartData, 400)
-					, document.getElementById('line-chart'))
+				this.originalData = v; 
+				// this.render(
+				this.chartData=this.formatLineChartData(this.chartData, 400)
+				// , document.getElementById('line-chart'))
 				console.log(28, this.chartData);
 			}
 			else {
+				// console.log(v);
         
-				this.originalData.push(v);
+				this.originalData.push(...v);
+				console.log(this.originalData);
+        
+				this.originalData.shift();
+				this.originalData.shift();
+
 				this.chartData = this.originalData;
-				this.render(
-					this.formatLineChartData(this.chartData, 400)
-					, document.getElementById('line-chart'))
-				console.log(28, this.chartData);
+				// this.render(
+				this.chartData=this.formatLineChartData(this.chartData, 400)
+				// , document.getElementById('line-chart'))
+				console.log(37, this.chartData);
 			}
 
 
