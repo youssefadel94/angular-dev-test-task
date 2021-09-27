@@ -1,1 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+	background: #fff;
+}
+
+#widget {
+	width: 780px;
+	height: 480px;
+	font: normal 10px verdana;
+	text-align: center;
+	margin: 40px auto;
+	border: 5px #aaa;
+	border-style: outset inset inset outset;
+}
+
+form {
+	width: 100%;
+	margin: 8% 0 10% 0;
+}
+
+select {
+	width: 240px;
+	font: normal 11px verdana;
+	background: #eeeeee;
+	border: none;
+	margin: 5px;
+	border-radius: 5px;
+	padding: 10px;
+}
+.custom-h {
+	margin-right: 30%;
+}
+#txtregion {
+	width: 240px;
+	height: 16px;
+	font: normal 14px verdana;
+	letter-spacing: 0.4em;
+	margin: auto;
+	border-bottom: 1px black solid;
+	padding: 4px;
+}
+
+#txtplacename {
+	width: 98%;
+	height: 16px;
+	font: normal 10px verdana;
+	letter-spacing: 0.3em;
+	margin: auto;
+	padding: 4px;
+}

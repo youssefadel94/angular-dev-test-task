@@ -1,0 +1,8 @@
+<h3 class="custom-h">Crypto Currency</h3>
+<select class="custom-select" [(ngModel)]="selected" size="1" name="selected">
+	<option value="" selected="selected">SELECT CURRENCY</option>
+	<option value="" disabled></option>
+	<option *ngFor="let currency of options" value="{{ currency.key }}">
+		{{ currency.name }}
+	</option>
+</select>
