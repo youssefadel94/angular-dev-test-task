@@ -1,24 +1,24 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
 	selector: 'bp-drop-down',
 	templateUrl: './drop-down.component.html',
 	styleUrls: ['./drop-down.component.scss']
 })
-export class DropDownComponent implements OnInit {
+export class DropDownComponent  {
 	@Input()
 	options!: Array<{ key:string, name:string }>;
 	@Output() selectChange = new EventEmitter();
 	selected = "";
 	constructor() {
-		console.log("");
-
+		// console.log("");
+		this.selected = 'BTC'
 	}
 
-	ngOnInit(): void {
-		console.log("");
+	// ngOnInit(): void {
+	//   // console.log("");
 
-	}
+	// }
 	onSelect() {
 		this.selectChange.emit(this.selected);
 	}

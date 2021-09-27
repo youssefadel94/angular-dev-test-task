@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { FirebaseService } from '../services';
+// import { FirebaseService } from '../services';
 
 @Component({
 	selector: 'bp-root',
@@ -11,5 +11,5 @@ import { FirebaseService } from '../services';
 export class AppComponent {
 	title = 'line-chart';
 
-	constructor(public firebase: FirebaseService) {}
+	// constructor( public firebase: FirebaseService) {}
 }

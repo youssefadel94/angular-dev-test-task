@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 
 import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 
 // Firebase App (the core Firebase SDK) is always required and must be listed first
 
@@ -16,7 +17,11 @@ import { CRYPTO_CURRENCIES_PRICES_COLLECTION_NAME, TURN_ON_REALTIME_CRYPTO_CURRE
 })
 export class CurrencyService {
 
+	private subject = new Subject<any>();
 
+	listen(): Observable<any> {
+		return this.subject.asObservable();
+	}
 	protected get _firestore(): firebase.firestore.Firestore {
 		return firebase.firestore();
 	}
@@ -35,28 +40,35 @@ export class CurrencyService {
 			appId: '1:978693463659:web:7aa38253892da9c0b15b2e',
 		});
 
-		// Example
-		this._firestore.collection(`${CRYPTO_CURRENCIES_PRICES_COLLECTION_NAME}/BTC/prices`).onSnapshot({
-			next(snapshot) {
-				console.warn(snapshot.docChanges().map(change => ({
-					timestamp: change.doc.id,
-					...change.doc.data(),
-				})));
-			},
-		});
+		// // Example
+		// this._firestore.collection(`${CRYPTO_CURRENCIES_PRICES_COLLECTION_NAME}/BTC/prices`).onSnapshot({
+		// 	next(snapshot) {
+		// 		console.warn(snapshot.docChanges().map(change => ({
+		// 			timestamp: change.doc.id,
+		// 			...change.doc.data(),
+		// 		})));
+		// 	},
+		// });
 
-		// Example
+		// // Example
 		// setTimeout(() => void this.turnOnRealtimeCryptoCurrencyPrices('BTC'), 2000);
 	}
-	getCurrency(currency : string ) {
-		this._firestore.collection(`${CRYPTO_CURRENCIES_PRICES_COLLECTION_NAME}/${currency}/prices`).onSnapshot({
-			next(snapshot) {
-				console.warn(snapshot.docChanges().map(change => ({
+	getCurrency(currency: string, limit: number, realTime: boolean) {
+		// ? check Limiter is working on latest 
+		this._firestore.collection(`${CRYPTO_CURRENCIES_PRICES_COLLECTION_NAME}/${currency}/prices`).orderBy('timestamp')
+			.limitToLast(limit).onSnapshot(snapshot => {
+				const price = snapshot.docChanges().map(change => ({
 					timestamp: change.doc.id,
 					...change.doc.data(),
-				})));
-			},
-		});
+				}));
+
+				if (price)
+					this.subject.next(price);
+			});
+		realTime ?
+			setTimeout(() => void this.turnOnRealtimeCryptoCurrencyPrices(currency), 2000)
+			: null;
+
 	}
 	getCurrenciesNames() {
 		return CRYPTO_CURRENCY_CODES_AND_NAMES;
