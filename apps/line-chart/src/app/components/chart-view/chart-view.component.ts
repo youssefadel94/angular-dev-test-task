@@ -10,7 +10,7 @@ export class ChartViewComponent implements OnInit {
 	// subscription: Subscription;
 
 	currenciesNames: Array<{ key: string, name: string }> = [];
-	selected = 'BTC'; N = 10; realTime = true;
+	selected = 'BTC'; N = 20; realTime = true;
 	data=[];
 	cur: any;
 	constructor(private currencies: CurrencyService) {
@@ -25,8 +25,6 @@ export class ChartViewComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.currencies.getCurrency(this.selected, this.N, this.realTime);
-    
-    
 	}
 	selectChangeHandler(selected: string) {
 		this.selected = selected;

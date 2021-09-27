@@ -1,15 +1,16 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
 @Component({
 	selector: 'bp-line-chart',
 	templateUrl: './line-chart.component.html',
-	styleUrls: ['./line-chart.component.scss'],
-	encapsulation: ViewEncapsulation.None
+	styleUrls: ['./line-chart.component.scss']
 })
 export class LineChartComponent implements OnInit {
 	@Input()
 	data!: Observable<any>;
+	@Input()
+	selector!: string;
 	subscription!: Subscription;
 	chartData: {
 		left: number;
@@ -17,36 +18,40 @@ export class LineChartComponent implements OnInit {
 		hypotenuse: number;
 		angle: number;
 		value: any;
-	}[]=[];
+	}[] = [];
 	originalData: any;
-
-
+	gotOriginal = false;
+	constructor(private cdr: ChangeDetectorRef,) { }
 	ngOnInit(): void {
-		console.log("");
+		// console.log("");
+		// // TODO create a new read dynamic flag
 		this.subscription = this.data.subscribe(v => {
+			if (!v) this.gotOriginal = false;
 			// console.log(23,v);
-			if (v.length > 2) {
+			if (!this.gotOriginal) {
 				this.chartData = v;
-				this.originalData = v; 
+				this.originalData = v;
 				// this.render(
-				this.chartData=this.formatLineChartData(this.chartData, 400)
+				this.chartData = this.formatLineChartData(this.chartData, 400)
 				// , document.getElementById('line-chart'))
-				console.log(28, this.chartData);
+				this.cdr.detectChanges();
+				this.gotOriginal = true;
 			}
 			else {
 				// console.log(v);
-        
+
 				this.originalData.push(...v);
-				console.log(this.originalData);
-        
-				this.originalData.shift();
-				this.originalData.shift();
+				// console.log(this.originalData);
+
+				v.forEach(() => { this.originalData.shift()});
 
 				this.chartData = this.originalData;
+
 				// this.render(
-				this.chartData=this.formatLineChartData(this.chartData, 400)
+				this.chartData = this.formatLineChartData(this.chartData, 400)
 				// , document.getElementById('line-chart'))
-				console.log(37, this.chartData);
+				// console.log(37, this.chartData);
+				this.cdr.detectChanges();
 			}
 
 
@@ -57,11 +62,6 @@ export class LineChartComponent implements OnInit {
 
 	formatLineChartData(values: string | any[], chartHeight: any) {
 
-		//divide chart size by total number of points to get length of triangle base. That becomes the left offset for each new point
-		//subtract previous point height from new point height to get the rise of the triangle. That becomes the bottom offset for the new point.
-		//use base squared + rise squared to find the length of the hypotenuse. That becomes the width of the line to draw.
-		//use Math.asin(base / hypotenuse) [then convert the radians to degrees] to find the degree angle to rotate the line to.
-		//Multiply the rotation angle by -1 if it needs to rise to meet the next point.
 
 		const widgetSize = chartHeight;
 		const pointSize = 2;
@@ -120,24 +120,7 @@ export class LineChartComponent implements OnInit {
 	sum = (total: any, value: { value: any; }) => total + value.value
 
 
-	render(data: any[], container: HTMLElement | null) {
-		console.log(data, container)
-		container ? container.innerHTML = "": null;
-		data.forEach((item) => {
-			const markup = this.createListItem(item);
-			const listItem = document.createElement("li");
-			listItem.style.cssText = `--x: ${item.left}px; --y: ${item.bottom}px`;
-			listItem.innerHTML = markup;
-			container ? container.appendChild(listItem) : null;
-		});
-	}
 
-	createListItem(item: { value: any; hypotenuse: any; angle: any; }) {
-		return `
-  <div class="data-point" data-value="${item.value}"></div>
-  <div class="line-segment" style="--hypotenuse: ${item.hypotenuse}; --angle:${item.angle};"></div>
-  `;
-	}
 
 
 }

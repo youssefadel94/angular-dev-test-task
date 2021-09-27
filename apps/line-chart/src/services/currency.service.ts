@@ -55,6 +55,7 @@ export class CurrencyService {
 	}
 	getCurrency(currency: string, limit: number, realTime: boolean) {
 		// ? check Limiter is working on latest 
+		this.subject.next(false);
 		this._firestore.collection(`${CRYPTO_CURRENCIES_PRICES_COLLECTION_NAME}/${currency}/prices`).orderBy('timestamp')
 			.limitToLast(limit).onSnapshot(snapshot => {
 				const price = snapshot.docChanges().map(change => ({
