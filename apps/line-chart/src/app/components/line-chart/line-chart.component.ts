@@ -21,8 +21,20 @@ export class LineChartComponent implements OnInit {
 	//canvas implement
 	@ViewChild('myCanvas') myCanvas!: ElementRef;
 	context!: CanvasRenderingContext2D;
+	readToDraw = false;
 
-	constructor(private cdr: ChangeDetectorRef,) { }
+	constructor(private cdr: ChangeDetectorRef,) {
+
+	}
+	ngAfterViewInit(): void {
+		const context = (<HTMLCanvasElement>this.myCanvas.nativeElement).getContext('2d');
+
+		if (context) {
+			this.context = context;
+			this.readToDraw = true;
+		}
+
+	}
 	ngOnInit(): void {
 		// console.log("");
 		// // TODO create a new read dynamic flag
@@ -36,6 +48,8 @@ export class LineChartComponent implements OnInit {
 				this.chartData = this.formatLineChartData(this.chartData, 400)
 				// , document.getElementById('line-chart'))
 				this.cdr.detectChanges();
+
+
 				this.gotOriginal = true;
 			}
 			else {
@@ -53,11 +67,42 @@ export class LineChartComponent implements OnInit {
 				// , document.getElementById('line-chart'))
 				// console.log(37, this.chartData);
 				this.cdr.detectChanges();
-			}
 
+
+			}
+			// console.log(this.readToDraw);
+
+			if (this.readToDraw) this.drawCanvas();
 
 		});
 
+
+	}
+	drawCanvas() {
+		// console.log("drawing canvas");
+    
+		//clear canvas
+		this.context.clearRect(0, 0, 400, 400);
+
+		this.context.beginPath();
+		// Draw Y-Axis
+		this.context.moveTo(0, 0);
+		this.context.lineTo(0, 400);
+		// Draw X-Axis
+		this.context.moveTo(0, 400);
+		this.context.lineTo(400, 400);
+    
+		this.context.moveTo(this.chartData[0].left, this.chartData[0].bottom);
+
+		//draw line chart
+		for (const point of this.chartData) {
+			const x = point.left;
+			const y = point.bottom;
+			this.context.lineTo(x, y);
+		}
+
+
+		this.context.stroke();
 	}
 	// chartValues = [{ price: 25 }, { price: 60 }, { price: 45 }, { price: 50 }, { price: 40 }]
 
@@ -85,7 +130,7 @@ export class LineChartComponent implements OnInit {
 				hypotenuse: 0,
 				angle: 0,
 				value: 0,
-				price:0,
+				price: 0,
 			};
 
 			currentValue.value = values[i].price;
@@ -108,7 +153,7 @@ export class LineChartComponent implements OnInit {
 			hypotenuse: 0,
 			angle: 0,
 			value: values[values.length - 1].price,
-			price:0
+			price: 0
 		};
 
 		cssValues.push(lastPoint);
