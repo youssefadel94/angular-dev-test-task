@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { ChartPoint } from '../../interfaces/types';
 
 @Component({
 	selector: 'bp-line-chart',
@@ -7,28 +8,28 @@ import { Observable, Subscription } from 'rxjs';
 	styleUrls: ['./line-chart.component.scss']
 })
 export class LineChartComponent implements OnInit {
+
 	@Input()
 	data!: Observable<any>;
 	@Input()
 	selector!: string;
 	subscription!: Subscription;
-	chartData: {
-		left: number;
-		bottom: number;
-		hypotenuse: number;
-		angle: number;
-		value: any;
-	}[] = [];
-	originalData: any;
+	chartData: ChartPoint[] = [];
+	originalData: ChartPoint[] = [];
 	gotOriginal = false;
+
+	//canvas implement
+	@ViewChild('myCanvas') myCanvas!: ElementRef;
+	context!: CanvasRenderingContext2D;
+
 	constructor(private cdr: ChangeDetectorRef,) { }
 	ngOnInit(): void {
 		// console.log("");
 		// // TODO create a new read dynamic flag
 		this.subscription = this.data.subscribe(v => {
-			if (!v) this.gotOriginal = false;
+			if (!v.length) this.gotOriginal = false;
 			// console.log(23,v);
-			if (!this.gotOriginal) {
+			if (!this.gotOriginal && v.length) {
 				this.chartData = v;
 				this.originalData = v;
 				// this.render(
@@ -43,7 +44,7 @@ export class LineChartComponent implements OnInit {
 				this.originalData.push(...v);
 				// console.log(this.originalData);
 
-				v.forEach(() => { this.originalData.shift()});
+				v.forEach(() => { this.originalData.shift() });
 
 				this.chartData = this.originalData;
 
@@ -60,7 +61,7 @@ export class LineChartComponent implements OnInit {
 	}
 	// chartValues = [{ price: 25 }, { price: 60 }, { price: 45 }, { price: 50 }, { price: 40 }]
 
-	formatLineChartData(values: string | any[], chartHeight: any) {
+	formatLineChartData(values: ChartPoint[], chartHeight: number) {
 
 
 		const widgetSize = chartHeight;
@@ -74,16 +75,17 @@ export class LineChartComponent implements OnInit {
 		let leftOffset = pointSize; //padding for left axis labels
 		let nextPoint = 0;
 		let rise = 0;
-		const cssValues = [];
+		const cssValues: ChartPoint[] = [];
 
 		for (let i = 0, len = values.length - 1; i < len; i++) {
 
-			const currentValue = {
+			const currentValue: ChartPoint = {
 				left: 0,
 				bottom: 0,
 				hypotenuse: 0,
 				angle: 0,
-				value: 0
+				value: 0,
+				price:0,
 			};
 
 			currentValue.value = values[i].price;
@@ -105,7 +107,8 @@ export class LineChartComponent implements OnInit {
 			bottom: (widgetSize - pointSize) * (values[values.length - 1].price / topMostPoint),
 			hypotenuse: 0,
 			angle: 0,
-			value: values[values.length - 1].price
+			value: values[values.length - 1].price,
+			price:0
 		};
 
 		cssValues.push(lastPoint);

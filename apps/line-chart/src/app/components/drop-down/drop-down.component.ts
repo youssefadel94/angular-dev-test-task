@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CurrencyNames } from '../../interfaces/types';
 
 @Component({
 	selector: 'bp-drop-down',
@@ -7,7 +8,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class DropDownComponent  {
 	@Input()
-	options!: Array<{ key:string, name:string }>;
+	options!: Array<CurrencyNames>;
 	@Output() selectChange = new EventEmitter();
 	selected = "";
 	constructor() {
