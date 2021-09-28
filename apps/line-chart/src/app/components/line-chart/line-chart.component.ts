@@ -92,12 +92,12 @@ export class LineChartComponent implements OnInit {
 		this.context.moveTo(0, 400);
 		this.context.lineTo(400, 400);
     
-		this.context.moveTo(this.chartData[0].left, this.chartData[0].bottom);
+		this.context.moveTo(this.chartData[0].left, this.chartData[0].bottom *-1 +400);
 
 		//draw line chart
 		for (const point of this.chartData) {
 			const x = point.left;
-			const y = point.bottom;
+			const y = point.bottom *-1 +400;
 			this.context.lineTo(x, y);
 		}
 
